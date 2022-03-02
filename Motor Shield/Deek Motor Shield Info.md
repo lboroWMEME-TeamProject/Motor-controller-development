@@ -33,3 +33,7 @@ Analogue signal is required for PWM.
   digitalWrite(8, HIGH);  //Engage the Brake for Channel B(motor2)
 
 //-------------------------------------------------------------
+
+
+
+Link: https://github.com/Luen/Arduino-Motor-Shield-29250/blob/master/examples/two-motor.ino
