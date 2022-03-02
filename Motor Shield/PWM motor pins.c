@@ -5,7 +5,7 @@
 #define ENC_IN 3 
  
 // MD10C PWM connected to pin 9, see the soldering connections for further info
-#define PWM  
+#define PWM 9 
 // MD10C DIR connected to pin 8
 #define DIR 8 
  
@@ -26,7 +26,7 @@ long currentMillis = 0;
 int rpm = 0;
  
 // Variable for PWM motor speed output
-int motorPwm = 0;
+int motorPwm = 255;
  
 void setup()
 {
