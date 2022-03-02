@@ -21,14 +21,14 @@ void loop(){
   //Motor B backward @ half speed
   digitalWrite(13, LOW);  //Establishes backward direction of Channel B
   digitalWrite(8, LOW);   //Disengage the Brake for Channel B
-  analogWrite(11, 123);    //Spins the motor on Channel B at half speed
+  analogWrite(11, 255);    //Spins the motor on Channel B at half speed
 
   
   delay(3000);
 
   
   digitalWrite(9, HIGH);  //Engage the Brake for Channel A
-  digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+  digitalWrite(8, HIGH);  //Engage the Brake for Channel B
 
 
   delay(1000);
@@ -37,7 +37,7 @@ void loop(){
   //Motor A forward @ full speed
   digitalWrite(12, LOW);  //Establishes backward direction of Channel A
   digitalWrite(9, LOW);   //Disengage the Brake for Channel A
-  analogWrite(3, 123);    //Spins the motor on Channel A at half speed
+  analogWrite(3, 255);    //Spins the motor on Channel A at half speed
   
   //Motor B forward @ full speed
   digitalWrite(13, HIGH); //Establishes forward direction of Channel B
@@ -49,7 +49,7 @@ void loop(){
   
   
   digitalWrite(9, HIGH);  //Engage the Brake for Channel A
-  digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+  digitalWrite(8, HIGH);  //Engage the Brake for Channel B
   
   
   delay(1000);
