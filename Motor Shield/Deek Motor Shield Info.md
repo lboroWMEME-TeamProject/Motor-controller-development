@@ -5,6 +5,7 @@ Digit signal is required to change the direction.
 Analogue signal is required for PWM. 
 
   //Motor A forward @ full speed
+  
   digitalWrite(12, HIGH); //Establishes forward direction of Channel A
   
   digitalWrite(9, LOW);   //Disengage the Brake for Channel A
