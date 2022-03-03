@@ -1,5 +1,5 @@
 // Motor encoder output pulse per rotation (change as required)
-#include <Encoder.h>
+#include <Encoder.h>// must install this library 
 #define ENC_COUNT_REV 100
 // Counters for milliseconds during interval
 long previousMillis = 0;
