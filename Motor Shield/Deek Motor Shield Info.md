@@ -37,3 +37,7 @@ Analogue signal is required for PWM.
 
 
 Link: https://github.com/Luen/Arduino-Motor-Shield-29250/blob/master/examples/two-motor.ino
+
+
+Datasheet for the encoder: 
+https://www.ni.com/pdf/dspdf/en/ds-217
