@@ -1,5 +1,5 @@
 // Motor encoder output pulse per rotation (change as required)
-#define ENC_COUNT_REV 300
+#define ENC_COUNT_REV 100.00
 // Counters for milliseconds during interval
 long previousMillis = 0;
 long currentMillis = 0;
@@ -9,7 +9,7 @@ volatile long encoderValue = 0;
 // One-second interval for measurements
 int interval = 1000;
 // Variable for RPM measuerment
-int rpm = 0;
+double rpm = 0;
 // Variable for PWM motor speed output
 int motorPwm = 255;
 
@@ -60,7 +60,7 @@ void loop(){
  
  
     // Calculate RPM
-    rpm = (float)(encoderValue * 60 / ENC_COUNT_REV);
+    rpm = (double)(encoderValue  / ENC_COUNT_REV); // revs per second 
  
     // Only update display when there is a reading
     if (motorPwm > 0 || rpm > 0) {
@@ -72,7 +72,7 @@ void loop(){
       Serial.print('\t');
       Serial.print(" SPEED: ");
       Serial.print(rpm);
-      Serial.println(" RPM");
+      Serial.println(" Revs/s");
     }
     
     encoderValue = 0;
