@@ -1,5 +1,5 @@
 // Motor encoder output pulse per rotation (change as required)
-#define ENC_COUNT_REV 374
+#define ENC_COUNT_REV 300
 // Counters for milliseconds during interval
 long previousMillis = 0;
 long currentMillis = 0;
@@ -32,7 +32,7 @@ void setup() {
 
   
   // Attach interrupt 
-  attachInterrupt(digitalPinToInterrupt(5), updateEncoder, RISING);
+  attachInterrupt(digitalPinToInterrupt(2), updateEncoder, RISING);
   
   // Setup initial values for timer
   previousMillis = millis();
