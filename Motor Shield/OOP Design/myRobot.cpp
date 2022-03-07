@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "Stream.h"
 #include "myRobot.h"
 
 // Pulse count from encoder
@@ -81,6 +82,9 @@ void myRobot::brake() // stop the robot
 //------------------------------------------------------------------------------ENCODER DEFINITION
 myRobot::Encoder::Encoder()
 {
+    // Setup Serial Monitor
+  Serial.begin(9600); 
+  
 	pinMode(channel_1A, INPUT_PULLUP); // setup input PWM for encoder pin
 	pinMode(channel_1B, INPUT_PULLUP); // setup input PWM for encoder pin  
 	pinMode(channel_2A, INPUT_PULLUP); // setup input PWM for encoder pin  
@@ -104,14 +108,15 @@ void myRobot::Encoder::enableA()
  
  
     // Calculate RPM
-		rpm = (double)(encoderValue*60  / encoder_pulses); // RPM calculation 
+		rpm = (encoderValue*60  / static_cast<double>(encoder_pulses)); // RPM calculation 
  
-		Serial.print("Encoder1: ");
-		Serial.print('\t');
+		Serial.print("Encoder1 ");
+		Serial.print("\t");
 		Serial.print(" ChannelA:");
 		Serial.print(rpm);
 		Serial.println(" RPM");
 		
 		encoderValue = 0;
   }
+
 }
