@@ -54,6 +54,13 @@ class myRobot
 	
 };
 
-
+struct Timer_vars
+{
+	static void updateEncoder();// function for the interrupt 
+	static volatile long encoderValue; // Pulse count from encoder
+	static long previousMillis;// Counters for milliseconds during interval
+	static long currentMillis; 
+	static double rpm;// Variable for RPM measuerment
+};
 
 #endif
