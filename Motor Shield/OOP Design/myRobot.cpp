@@ -1,16 +1,7 @@
 #include "myRobot.h"
 
-//------------------------------------------INITIALISING THE TIMER_VARS MEMBERS
-volatile long Timer_vars::encoderValue = 0; 
-long Timer_vars::previousMillis = 0;
-long Timer_vars::currentMillis = 0; 
-double Timer_vars::rpm = 0;
+volatile long myRobot::Encoder::encoderValue[]={0,0};
 
-void Timer_vars::updateEncoder()
-{
-  // Increment value for each pulse from encoder
-  encoderValue++;
-}
 //--------------------------------------------------------------------------------
 
 myRobot::myRobot()
@@ -75,44 +66,49 @@ void myRobot::brake() // stop the robot
 
 
 //------------------------------------------------------------------------------ENCODER DEFINITION
-myRobot::Encoder::Encoder()
+myRobot::Encoder::Encoder(int a, int b)
+: channelA{a},channelB{b}
 {
-  Serial.begin(9600);
+	Serial.begin(9600);
   
-	pinMode(channel_1A, INPUT_PULLUP); // setup input PWM for encoder pin
-	pinMode(channel_1B, INPUT_PULLUP); // setup input PWM for encoder pin  
-	pinMode(channel_2A, INPUT_PULLUP); // setup input PWM for encoder pin  
-	pinMode(channel_2B, INPUT_PULLUP); // setup input PWM for encoder pin  
+	pinMode(channelA, INPUT_PULLUP); // setup input PWM for encoder pin
+	pinMode(channelB, INPUT_PULLUP); // setup input PWM for encoder pin  
 	
-	attachInterrupt(digitalPinToInterrupt(channel_1A),Timer_vars::updateEncoder, RISING);
+	attachInterrupt(digitalPinToInterrupt(channelA),updateEncoder, RISING);
 //	attachInterrupt(digitalPinToInterrupt(channel_1B), updateEncoder, RISING);
-//	attachInterrupt(digitalPinToInterrupt(channel_2A), updateEncoder, RISING);
-//	attachInterrupt(digitalPinToInterrupt(channel_2B), updateEncoder, RISING);
+
 	
-	Timer_vars::previousMillis = millis(); // start timer 
+	previousMillis[0] = millis(); // start timer 
 }
 
 
-void myRobot::Encoder::enableA()
+void myRobot::Encoder::show()
 {
-	Timer_vars::currentMillis = millis();
-	
-	if (Timer_vars::currentMillis - Timer_vars::previousMillis > interval) 
-	{
-		Timer_vars::previousMillis = Timer_vars::currentMillis;
+  currentMillis[0] = millis();
+  
+  if (currentMillis[0] - previousMillis[0] > interval) 
+  {
+    previousMillis[0] = currentMillis[0];
  
  
     // Calculate RPM
-		Timer_vars::rpm = (Timer_vars::encoderValue * 60  / static_cast<double>(encoder_pulses)); // RPM calculation 
+    rpm[0] = (encoderValue[0] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation 
  
-		Serial.print("Encoder1: ");
-		Serial.print('\t');
-		Serial.print(" ChannelA:");
-		Serial.print(Timer_vars::rpm);
-		Serial.print(" RPM");
+    Serial.print("Encoder1: ");
+    Serial.print('\t');
+    Serial.print(" ChannelA:");
+    Serial.print(rpm[0]);
+    Serial.print(" RPM");
     Serial.print("\tChannelB:");
     Serial.println(" RPM");
-		
-		Timer_vars::encoderValue = 0;
+    
+   encoderValue[0] = 0;
   }
+  
+}
+
+void myRobot::Encoder::updateEncoder()
+{
+  // Increment value for each pulse from encoder
+  encoderValue[0]++;
 }
