@@ -2,7 +2,7 @@
 
 
  myRobot robot;
- myRobot::Encoder encoder;
+ myRobot::Encoder encoder(ENCODER1_A,ENCODER1_B);
 
 
 void setup()
@@ -11,6 +11,6 @@ void setup()
 } 
 void loop()
 {
-  //robot.move("forward",100);
-  encoder.enableA();
+  robot.move("forward",100);
+  encoder.show();
 }
