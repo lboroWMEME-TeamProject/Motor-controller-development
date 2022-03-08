@@ -75,40 +75,45 @@ myRobot::Encoder::Encoder(int a, int b)
 	pinMode(channelB, INPUT_PULLUP); // setup input PWM for encoder pin  
 	
 	attachInterrupt(digitalPinToInterrupt(channelA),updateEncoder, RISING);
-//	attachInterrupt(digitalPinToInterrupt(channel_1B), updateEncoder, RISING);
+	attachInterrupt(digitalPinToInterrupt(channelB), updateEncoder, RISING);
 
 	
-	previousMillis[0] = millis(); // start timer 
+	previousMillis[0] = millis(); // start timer
+  previousMillis[1] = millis(); // start timer  
 }
 
 
 void myRobot::Encoder::show()
 {
   currentMillis[0] = millis();
+  currentMillis[1] = millis();
   
-  if (currentMillis[0] - previousMillis[0] > interval) 
+  if (currentMillis[0] - previousMillis[0] > interval)
   {
     previousMillis[0] = currentMillis[0];
- 
+    previousMillis[1] = currentMillis[1];
  
     // Calculate RPM
-    rpm[0] = (encoderValue[0] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation 
- 
-    Serial.print("Encoder1: ");
-    Serial.print('\t');
-    Serial.print(" ChannelA:");
+    rpm[0] = (encoderValue[0] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation
+    rpm[1] = (encoderValue[1] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation  
+
+    Serial.print("Encoder(RPM): ");
     Serial.print(rpm[0]);
-    Serial.print(" RPM");
-    Serial.print("\tChannelB:");
-    Serial.println(" RPM");
+    Serial.print("\t");
+    Serial.println(rpm[1]);
     
-   encoderValue[0] = 0;
+    encoderValue[0] = 0;
+    encoderValue[1] = 0;
   }
   
 }
 
 void myRobot::Encoder::updateEncoder()
 {
-  // Increment value for each pulse from encoder
-  encoderValue[0]++;
+  encoderValue[0]++; // Increment value for each pulse from encoder
+}
+
+void myRobot::Encoder::updateEncoder2()
+{
+  encoderValue[1]++;// Increment value for each pulse from encoder
 }
