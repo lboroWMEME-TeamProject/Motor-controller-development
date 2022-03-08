@@ -38,6 +38,7 @@ class myRobot
 				long currentMillis[2]={0,0}; 
 				double rpm[2]={0,0};// Variable for RPM measuerment
 				static void updateEncoder();
+        static void updateEncoder2();
         static volatile long encoderValue[2]; // Pulse count from encoder
 		};
 	
