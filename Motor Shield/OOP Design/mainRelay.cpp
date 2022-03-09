@@ -1,6 +1,6 @@
 #include "myRobot.h"
 
-Relay relay(7,10,14);// replace these with global definitions or any other pins
+Relay relay(RELAY1,RELAY2,RELAY3);// replace these with global definitions or any other pins
 
 void setup()
 {}
