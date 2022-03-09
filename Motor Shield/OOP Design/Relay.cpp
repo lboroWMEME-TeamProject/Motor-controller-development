@@ -14,16 +14,17 @@ Relay::Relay(int a,int b,int c)
   pinMode(pins[2], OUTPUT); 
 }
 
-void Relay::On()
-{
-  digitalWrite(pins[0], HIGH); 
-  digitalWrite(pins[1], HIGH);  
-  digitalWrite(pins[2], HIGH); 
-}
-
-void Relay::Off()
+void Relay::On() // LOW= HIGH due to incorrect wiring 
 {
   digitalWrite(pins[0], LOW); 
   digitalWrite(pins[1], LOW);  
   digitalWrite(pins[2], LOW); 
+
+}
+
+void Relay::Off()
+{
+  digitalWrite(pins[0], HIGH); 
+  digitalWrite(pins[1], HIGH);  
+  digitalWrite(pins[2], HIGH); 
 }
