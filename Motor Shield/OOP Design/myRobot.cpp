@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "myRobot.h"
 
 volatile long myRobot::Encoder::encoderValue[]={0,0};
@@ -18,14 +19,17 @@ myRobot::myRobot()
 void myRobot::move(const String& Direction,double speed)
 {
 	int analogW = speed*scaling_factor; // analgoue value to write for PWM 
-	
+ 
+  
 	if (Direction.equalsIgnoreCase("forward"))
 	{
+    m_dir = true;
 		move_F(analogW); // move forward
 	}
 	
 	else if (Direction.equalsIgnoreCase("reverse"))
 	{
+    m_dir = false;
 		move_B(analogW); // move backward 
 	}
 		
@@ -69,34 +73,30 @@ void myRobot::brake() // stop the robot
 myRobot::Encoder::Encoder(int a, int b)
 : channelA{a},channelB{b}
 {
-	Serial.begin(9600);
   
 	pinMode(channelA, INPUT_PULLUP); // setup input PWM for encoder pin
 	pinMode(channelB, INPUT_PULLUP); // setup input PWM for encoder pin  
 	
 	attachInterrupt(digitalPinToInterrupt(channelA),updateEncoder, RISING);
-	attachInterrupt(digitalPinToInterrupt(channelB), updateEncoder, RISING);
+	attachInterrupt(digitalPinToInterrupt(channelB), updateEncoder2, RISING);
 
 	
-	previousMillis[0] = millis(); // start timer
-  previousMillis[1] = millis(); // start timer  
+	previousMillis = millis(); // start timer
 }
 
 
 void myRobot::Encoder::show()
 {
-  currentMillis[0] = millis();
-  currentMillis[1] = millis();
+  currentMillis = millis();
   
-  if (currentMillis[0] - previousMillis[0] > interval)
+  if (currentMillis - previousMillis > interval)
   {
-    previousMillis[0] = currentMillis[0];
-    previousMillis[1] = currentMillis[1];
- 
-    // Calculate RPM
-    rpm[0] = (encoderValue[0] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation
-    rpm[1] = (encoderValue[1] * 60  / static_cast<double>(encoder_pulses)); // RPM calculation  
+      // Calculate RPM
+    rpm[0] = (encoderValue[0] * 60  / (static_cast<double>(encoder_pulses))); // RPM calculation
+    rpm[1] = (encoderValue[1] * 60  / (static_cast<double>(encoder_pulses))); // RPM calculation  
 
+    previousMillis = currentMillis;
+  
     Serial.print("Encoder(RPM): ");
     Serial.print(rpm[0]);
     Serial.print("\t");
@@ -117,3 +117,56 @@ void myRobot::Encoder::updateEncoder2()
 {
   encoderValue[1]++;// Increment value for each pulse from encoder
 }
+
+Relay::Relay(int a,int b,int c)
+{
+  pins[0]=a;
+  pins[1]=b;
+  pins[2]=c;
+
+
+  pinMode(pins[0], OUTPUT); 
+  pinMode(pins[1], OUTPUT); 
+  pinMode(pins[2], OUTPUT); 
+}
+
+void Relay::On()
+{
+  digitalWrite(pins[0], HIGH); 
+  digitalWrite(pins[1], HIGH);  
+  digitalWrite(pins[2], HIGH); 
+}
+
+void Relay::Off()
+{
+  digitalWrite(pins[0], LOW); 
+  digitalWrite(pins[1], LOW);  
+  digitalWrite(pins[2], LOW); 
+}
+
+Control::Control(myRobot* r,double set)
+:Rptr{r},Setpoint{set}
+{
+    PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+    myPID.SetMode(AUTOMATIC);
+    Input = analogRead(ENCODER1_A);
+    pidPtr = &myPID;
+}
+
+void Control::enable()
+{
+    Input = analogRead(ENCODER1_A);
+    pidPtr->Compute();
+
+    if (Rptr->getDIR())
+    {
+      Rptr->move_F(Output);
+    }
+    else
+    {
+      Rptr->move_B(Output);
+    }
+    
+}
+
+
