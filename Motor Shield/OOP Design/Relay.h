@@ -15,6 +15,6 @@ class Relay
   
   private:
   int pins[3];
-}
+};
 
 #endif
