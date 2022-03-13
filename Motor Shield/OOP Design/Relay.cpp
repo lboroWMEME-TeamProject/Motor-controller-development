@@ -28,3 +28,15 @@ void Relay::Off()
   digitalWrite(pins[1], HIGH);  
   digitalWrite(pins[2], HIGH); 
 }
+
+void Relay::setPin(int index,const String& level)
+{
+    if level.equalsIgnoreCase("on")
+    {
+      digitalWrite(pins[index],LOW);
+    }
+    elseif level.equalsIgnoreCase("off")
+    {
+      digitalWrite(pins[index],HIGH);
+    }
+}
