@@ -35,7 +35,7 @@ void Relay::setPin(int index,const String& level)
     {
       digitalWrite(pins[index],LOW);
     }
-    elseif level.equalsIgnoreCase("off")
+    else if level.equalsIgnoreCase("off")
     {
       digitalWrite(pins[index],HIGH);
     }
