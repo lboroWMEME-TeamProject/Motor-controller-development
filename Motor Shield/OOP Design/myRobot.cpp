@@ -1,6 +1,172 @@
 #include "Arduino.h"
 #include "myRobot.h"
 
+volatile unsigned int EncoderCounter::encoder0Pos=0;
+volatile unsigned int EncoderCounter::encoder1Pos=0;
+
+
+EncoderCounter::EncoderCounter()
+{
+  pinMode(ENCODER1_A, INPUT);
+  pinMode(ENCODER1_B, INPUT);
+  pinMode(ENCODER2_A, INPUT);
+  pinMode(ENCODER2_B, INPUT);
+
+  // encoder pin on interrupt 0 (pin 2)
+  attachInterrupt(INTERRUPT1, doEncoderA, CHANGE);
+  // encoder pin on interrupt 5 (pin 18)
+  attachInterrupt(INTERRUPT2, doEncoderB, CHANGE);
+   // encoder pin on interrupt 0 (pin 19)
+  attachInterrupt(INTERRUPT3, doEncoderC, CHANGE);
+  // encoder pin on interrupt 5 (pin 20)
+  attachInterrupt(INTERRUPT4, doEncoderD, CHANGE);
+}
+
+void EncoderCounter::doEncoderA() {
+  // look for a low-to-high on channel A
+  if (digitalRead(ENCODER1_A) == HIGH) {
+
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER1_B) == LOW) {
+      encoder0Pos = encoder0Pos + 1;         // CW
+    }
+    else {
+      encoder0Pos = encoder0Pos - 1;         // CCW
+    }
+  }
+
+  else   // must be a high-to-low edge on channel A
+  {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER1_B) == HIGH) {
+      encoder0Pos = encoder0Pos + 1;          // CW
+    }
+    else {
+      encoder0Pos = encoder0Pos - 1;          // CCW
+    }
+  }
+  Serial.println (encoder0Pos, DEC);
+  // use for debugging - remember to comment out
+}
+
+void EncoderCounter::doEncoderB() {
+  // look for a low-to-high on channel B
+  if (digitalRead(ENCODER1_B) == HIGH) {
+
+    // check channel A to see which way encoder is turning
+    if (digitalRead(ENCODER1_A) == HIGH) {
+      encoder0Pos = encoder0Pos + 1;         // CW
+    }
+    else {
+      encoder0Pos = encoder0Pos - 1;         // CCW
+    }
+  }
+
+  // Look for a high-to-low on channel B
+
+  else {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER1_A) == LOW) {
+      encoder0Pos = encoder0Pos + 1;          // CW
+    }
+    else {
+      encoder0Pos = encoder0Pos - 1;          // CCW
+    }
+  }
+}
+
+void EncoderCounter::doEncoderC() {
+  // look for a low-to-high on channel A
+  if (digitalRead(ENCODER2_A) == HIGH) {
+
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER2_B) == LOW) {
+      encoder1Pos = encoder1Pos + 1;         // CW
+    }
+    else {
+      encoder1Pos = encoder1Pos - 1;         // CCW
+    }
+  }
+
+  else   // must be a high-to-low edge on channel A
+  {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER1_B) == HIGH) {
+      encoder1Pos = encoder1Pos + 1;          // CW
+    }
+    else {
+      encoder1Pos = encoder1Pos - 1;          // CCW
+    }
+  }
+  Serial.println (encoder1Pos, DEC);
+  // use for debugging - remember to comment out
+}
+
+
+
+void EncoderCounter::doEncoderD() {
+  // look for a low-to-high on channel D
+  if (digitalRead(ENCODER2_B) == HIGH) {
+
+    // check channel A to see which way encoder is turning
+    if (digitalRead(ENCODER2_A) == HIGH) {
+      encoder1Pos = encoder1Pos + 1;         // CW
+    }
+    else {
+      encoder1Pos = encoder1Pos - 1;         // CCW
+    }
+  }
+
+  // Look for a high-to-low on channel B
+
+  else {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER2_A) == LOW) {
+      encoder1Pos = encoder1Pos + 1;          // CW
+    }
+    else {
+      encoder1Pos = encoder1Pos - 1;          // CCW
+    }
+  }
+}
+
+void EncoderCounter::showCount()
+{
+  Serial.print("Encoder1:");
+  Serial.print(encoder0Pos);
+  Serial.print("\t");
+  Serial.print("Encoder2:");
+  Serial.println(encoder1Pos);
+}
+
+
+Relay::Relay(int a,int b,int c)
+{
+  pins[0]=a;
+  pins[1]=b;
+  pins[2]=c;
+
+
+  pinMode(pins[0], OUTPUT); 
+  pinMode(pins[1], OUTPUT); 
+  pinMode(pins[2], OUTPUT); 
+}
+
+void Relay::On() // LOW= HIGH due to incorrect wiring 
+{
+  digitalWrite(pins[0], LOW); 
+  digitalWrite(pins[1], LOW);  
+  digitalWrite(pins[2], LOW); 
+
+}
+
+void Relay::Off()
+{
+  digitalWrite(pins[0], HIGH); 
+  digitalWrite(pins[1], HIGH);  
+  digitalWrite(pins[2], HIGH); 
+}
+
 volatile long myRobot::Encoder::encoderValue[]={0,0};
 
 //--------------------------------------------------------------------------------
@@ -117,56 +283,3 @@ void myRobot::Encoder::updateEncoder2()
 {
   encoderValue[1]++;// Increment value for each pulse from encoder
 }
-
-Relay::Relay(int a,int b,int c)
-{
-  pins[0]=a;
-  pins[1]=b;
-  pins[2]=c;
-
-
-  pinMode(pins[0], OUTPUT); 
-  pinMode(pins[1], OUTPUT); 
-  pinMode(pins[2], OUTPUT); 
-}
-
-void Relay::On()
-{
-  digitalWrite(pins[0], HIGH); 
-  digitalWrite(pins[1], HIGH);  
-  digitalWrite(pins[2], HIGH); 
-}
-
-void Relay::Off()
-{
-  digitalWrite(pins[0], LOW); 
-  digitalWrite(pins[1], LOW);  
-  digitalWrite(pins[2], LOW); 
-}
-
-Control::Control(myRobot* r,double set)
-:Rptr{r},Setpoint{set}
-{
-    PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
-    myPID.SetMode(AUTOMATIC);
-    Input = analogRead(ENCODER1_A);
-    pidPtr = &myPID;
-}
-
-void Control::enable()
-{
-    Input = analogRead(ENCODER1_A);
-    pidPtr->Compute();
-
-    if (Rptr->getDIR())
-    {
-      Rptr->move_F(Output);
-    }
-    else
-    {
-      Rptr->move_B(Output);
-    }
-    
-}
-
-
