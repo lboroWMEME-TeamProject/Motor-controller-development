@@ -12,6 +12,7 @@ class Relay
   Relay(int,int,int);
   void On();
   void Off();
+  void setPin(int,const String&);
   
   private:
   int pins[3];
