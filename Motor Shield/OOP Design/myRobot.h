@@ -1,7 +1,7 @@
 #ifndef myRobot_h
 #define myRobot_h
 
-#include <PID_v1.h>
+//#include <PID_v1.h>
 
 #define ENCODER1_A 2
 #define ENCODER1_B 18
@@ -11,6 +11,21 @@
 #define RELAY2 10
 #define RELAY3 14
 
+#define INTERRUPT1 0 // pin 2
+#define INTERRUPT2 5 // pin 18
+#define INTERRUPT3 4 // pin 19
+#define INTERRUPT4 3 // pin 20
+
+class Relay
+{
+  public:
+  Relay(int,int,int);
+  void On();
+  void Off();
+  
+  private:
+  int pins[3];
+};
 
 
 class myRobot
@@ -63,43 +78,24 @@ class myRobot
 		
 };
 
-class Relay
+class EncoderCounter
 {
   public:
-  Relay(int,int,int);
-  void On();
-  void Off();
+  EncoderCounter();
+
+  void showCount();
+  
+  static void doEncoderA();
+  static void doEncoderB();
+  static void doEncoderC();
+  static void doEncoderD();
   
   private:
-  int pins[3];
-};
-
-class Control
-{
-  public:
-  Control(myRobot*,double);
-  void enable();
-  
-  private:
-  myRobot* Rptr;
-  double Setpoint, Input, Output;//Define Variables we'll be connecting to
-  double Kp=2, Ki=5, Kd=1;//Specify the links and initial tuning parameters
-  PID* pidPtr;
+  static volatile unsigned int encoder0Pos;
+  static volatile unsigned int encoder1Pos;
+ 
 };
 
 
-/*
-struct Timer_vars
-{
-	static void updateEncoder();// function for the interrupt 
-//	static void updateEncoder2();
-//	static void updateEncoder3();
-//	static void updateEncoder4();
-	
-	static volatile long encoderValue[4]; // Pulse count from encoder
-	static long previousMillis[4];// Counters for milliseconds during interval
-	static long currentMillis[4]; 
-	static double rpm[4];// Variable for RPM measuerment
-};
-*/
+
 #endif
