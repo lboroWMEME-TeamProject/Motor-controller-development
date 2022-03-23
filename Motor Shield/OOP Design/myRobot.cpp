@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include "myRobot.h"
 
-volatile unsigned int EncoderCounter::encoder0Pos=0;
-volatile unsigned int EncoderCounter::encoder1Pos=0;
+volatile long EncoderCounter::encoder0Pos=0;
+volatile long EncoderCounter::encoder1Pos=0;
 
 
 EncoderCounter::EncoderCounter()
@@ -132,10 +132,9 @@ void EncoderCounter::doEncoderD() {
 
 void EncoderCounter::showCount()
 {
-  Serial.print("Encoder1:");
+
   Serial.print(encoder0Pos);
-  Serial.print("\t");
-  Serial.print("Encoder2:");
+  Serial.print(" , ");
   Serial.println(encoder1Pos);
 }
 
@@ -247,21 +246,21 @@ myRobot::Encoder::Encoder(int a, int b)
 	attachInterrupt(digitalPinToInterrupt(channelB), updateEncoder2, RISING);
 
 	
-	previousMillis = millis(); // start timer
+//	previousMillis = millis(); // start timer
 }
 
 
 void myRobot::Encoder::show()
 {
-  currentMillis = millis();
+ // currentMillis = millis();
   
-  if (currentMillis - previousMillis > interval)
-  {
+//  if (currentMillis - previousMillis > interval)
+//  {
       // Calculate RPM
-    rpm[0] = (encoderValue[0] * 60  / (static_cast<double>(encoder_pulses))); // RPM calculation
-    rpm[1] = (encoderValue[1] * 60  / (static_cast<double>(encoder_pulses))); // RPM calculation  
+    rpm[0] = (encoderValue[0] * 60 *4 / (static_cast<double>(encoder_pulses))); // RPM calculation
+    rpm[1] = (encoderValue[1] * 60 *4 / (static_cast<double>(encoder_pulses))); // RPM calculation  
 
-    previousMillis = currentMillis;
+ //   previousMillis = currentMillis;
   
     Serial.print("Encoder(RPM): ");
     Serial.print(rpm[0]);
@@ -270,7 +269,7 @@ void myRobot::Encoder::show()
     
     encoderValue[0] = 0;
     encoderValue[1] = 0;
-  }
+  
   
 }
 
@@ -283,3 +282,32 @@ void myRobot::Encoder::updateEncoder2()
 {
   encoderValue[1]++;// Increment value for each pulse from encoder
 }
+
+
+void encoder_init()
+{
+ Serial.begin(9600);
+ 
+ cli(); // stop interrupts
+ //set timer1 interrupt at 1Hz
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B
+  TCNT1  = 0;//initialize counter value to 0
+  // set compare match register for 4hz increments
+  OCR1A = 3905;// = (16*10^6) / (4*1024) - 1 (must be <65536)
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS10 and CS12 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (1 << CS10);  
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A); 
+
+ sei(); // enable interrupts 
+}
+/*
+ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
+{
+  encoder1.show();
+  encoder2.show();
+}
+*/
