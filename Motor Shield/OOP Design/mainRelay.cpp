@@ -8,7 +8,10 @@ void setup()
 void loop()
 {
   relay.On();
-  delay(100);
+  delay(100); // on for 100ms
   relay.Off();
-  delay(100);
+  delay(100);// off for 100ms
+  
+ // relay.setPin(1,"On"); // turn on pin # 1 = PIN10
+ // relay.setPin(0,"off"); // turn off pin#0 = PIN7
 }
