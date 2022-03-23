@@ -37,6 +37,8 @@ class myRobot
 		void move(const String&,double);
 		void move_F(int);
 		void move_B(int);
+    void moveM1(int,bool);
+    void moveM2(int,bool);
 		void brake();
     bool getDIR(){return m_dir;}
 		
