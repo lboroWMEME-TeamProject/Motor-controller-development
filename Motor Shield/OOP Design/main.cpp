@@ -9,9 +9,14 @@ long prevT =0;
 float eprev = 0;
 float eintegral = 0;
 
+const float distance = 1.75; // move the robot 1.5 meters 
+
 void setup()
 {
   Serial.begin(9600);
+  pinMode(2,INPUT);
+  pinMode(18,INPUT);
+  attachInterrupt(digitalRead(2),readEncoder,RISING);
 //   encoder_init();// initialise the encoder
 
 }
@@ -19,7 +24,8 @@ void setup()
 void loop()
 { 
 
-   int target = 1229;
+
+   int target = distance * 1238; // compute the encoder counts 
   
    float kp = 1;
    float kd = 0;
@@ -60,4 +66,18 @@ ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
 {
   encoder1.show();
   encoder2.show(); 
+}
+
+void readEncoder()
+{
+  int b= digitalRead(18);
+
+  if (b>0)
+  {
+    pos++;
+  }
+  else
+  {
+   pos--; 
+  }
 }
