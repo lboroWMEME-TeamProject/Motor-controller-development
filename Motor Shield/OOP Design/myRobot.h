@@ -91,11 +91,11 @@ class EncoderCounter
   static void doEncoderD();
   
   private:
-  static volatile unsigned int encoder0Pos;
-  static volatile unsigned int encoder1Pos;
+  static volatile long encoder0Pos;
+  static volatile long encoder1Pos;
  
 };
 
-
+void encoder_init();
 
 #endif
