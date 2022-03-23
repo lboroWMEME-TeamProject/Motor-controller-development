@@ -7,9 +7,9 @@ void setup()
 
 void loop()
 {
-  relay.On();
+  relay.On(); // turn ON ALL pins
   delay(100); // on for 100ms
-  relay.Off();
+  relay.Off();// turn OFF ALL pins
   delay(100);// off for 100ms
   
  // relay.setPin(1,"On"); // turn on pin # 1 = PIN10
