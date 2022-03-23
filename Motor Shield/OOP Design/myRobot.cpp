@@ -227,6 +227,40 @@ void myRobot::move_B(int analogW) // move backward
 	analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
 }
 
+void myRobot::moveM1(int analogW,bool dir)
+{
+  if (dir) // rotate 1 direction
+  {
+    digitalWrite(dir1, HIGH); //Establishes direction of Channel A
+    digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
+    analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
+  }
+  else if(!dir) // rotate opposite direction 
+  {
+    digitalWrite(dir1,LOW); //Establishes direction of Channel A
+    digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
+    analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
+  }
+}
+
+void myRobot::moveM2(int analogW,bool dir)
+{
+  if (dir) // rotate 1 direction
+  {
+    //Motor B 
+   digitalWrite(dir2, HIGH);  //Establishes  direction of Channel B
+   digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
+   analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
+  }
+  else if(!dir) // rotate opposite direction 
+  {
+    //Motor B 
+   digitalWrite(dir2, LOW);  //Establishes  direction of Channel B
+   digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
+   analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
+  }
+}
+
 void myRobot::brake() // stop the robot 
 {
 	digitalWrite(brake1, HIGH);  //Engage the Brake for Channel A
