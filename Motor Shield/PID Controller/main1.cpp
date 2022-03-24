@@ -1,17 +1,18 @@
-#include "myRobot.h"
-
+#include "Control.h"
 
 myRobot robot;
-Controller pid(0);
+Controller pid1(0);
+Controller pid2(1);
 
 void setup()
 {
   Serial.begin(9600);
-  pid.setCommand(true,2);  // set direction and distance in meters
+  pid1.setCommand(true,1.75);  // set direction and distance in meters
+  pid2.setCommand(true,1.75);
 }
 
 void loop()
 {
-  pid.Compute();  
-  
+  pid1.Compute();  
+  pid2.Compute();
 }
