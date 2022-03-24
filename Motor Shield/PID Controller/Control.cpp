@@ -114,8 +114,6 @@ void myRobot::brake() // stop the robot
 //--------------------------------------------------------ANGULAR FREQUENCY ENCODER FUNCTION
 void encoder_init()
 {
- Serial.begin(9600);
- 
  cli(); // stop interrupts
  //set timer1 interrupt at 1Hz
   TCCR1A = 0;// set entire TCCR1A register to 0
@@ -159,7 +157,7 @@ Controller::Controller(int number) // inistialise encoder pins
     }
 }
 
-void Controller::setCommand(bool dir,int distance) // user input for direction and distance
+void Controller::setCommand(bool dir,float distance) // user input for direction and distance
 {
   m_dir = dir;
   
@@ -293,6 +291,5 @@ void Controller::Compute()
    Serial.print(target);
    Serial.print(" ");
    Serial.print(count[m_num]);
-   Serial.println();
-   
+   Serial.println();   
 }
