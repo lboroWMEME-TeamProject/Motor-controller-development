@@ -77,25 +77,21 @@ void encoder2_init();
 class Controller: public myRobot
 {
   public:
-  Controller(int);
-  void setCommand(bool,int);
-  void setControl(float,float,float);
   
+  Controller(int);
+  void setCommand(bool,float);
+  void setControl(float,float,float);
   void Compute();
-
-   
+  
   private:
-
   int m_num;
   int m_encoderPins[2];
-  
   bool m_dir;
   float kp = 5;
   float kd = 0.5;
   float ki = 0;
   int target;
   int encoderMeasure;
-
   long prevT =0;
   float eprev = 0;
   float eintegral = 0;
