@@ -89,17 +89,18 @@ void loop()
 #include "myRobot.h" // include the robot file 
 
 myRobot robot; // initialise all pins
-myRobot::Encoder encoder1(ENCODER1_A,ENCODER1_B); // insitialise the encoder1 pins
-myRobot::Encoder encoder2(ENCODER2_A,ENCODER2_B); // insitialise the encoder2 pins
+myRobot::Encoder encoder1(0); // insitialise the encoder1 pins
+myRobot::Encoder encoder2(1); // insitialise the encoder2 pins
 
 void setup()
 {
-  Serial.begin(9600);
-  encoder_init();// enable the encoder interrupts 
+  interrupt_init();// enable the encoder interrupts 
 }
 
 void loop()
-{}
+{
+ //  robot.move("forward",100);
+}
 
 ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
 {
