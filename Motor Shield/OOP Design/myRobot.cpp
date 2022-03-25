@@ -4,6 +4,7 @@
 volatile long EncoderCounter::encoder0Pos=0;
 volatile long EncoderCounter::encoder1Pos=0;
 
+volatile long counter[2] = {0,0};
 
 EncoderCounter::EncoderCounter()
 {
@@ -45,7 +46,7 @@ void EncoderCounter::doEncoderA() {
       encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
-  Serial.println (encoder0Pos, DEC);
+//  Serial.println (encoder0Pos, DEC);
   // use for debugging - remember to comment out
 }
 
@@ -98,7 +99,7 @@ void EncoderCounter::doEncoderC() {
       encoder1Pos = encoder1Pos - 1;          // CCW
     }
   }
-  Serial.println (encoder1Pos, DEC);
+//  Serial.println (encoder1Pos, DEC);
   // use for debugging - remember to comment out
 }
 
@@ -166,7 +167,7 @@ void Relay::Off()
   digitalWrite(pins[2], HIGH); 
 }
 
-volatile long myRobot::Encoder::encoderValue[]={0,0};
+
 
 //--------------------------------------------------------------------------------
 
@@ -261,6 +262,19 @@ void myRobot::moveM2(int analogW,bool dir)
   }
 }
 
+void myRobot::moveSelect(int num,int analogue,bool dir)
+{
+  if (!num)
+  {
+    moveM2(analogue,dir);
+  }
+  else if (num==1)
+  {
+    moveM1(analogue,dir);
+  }
+}
+
+
 void myRobot::brake() // stop the robot 
 {
 	digitalWrite(brake1, HIGH);  //Engage the Brake for Channel A
@@ -269,56 +283,112 @@ void myRobot::brake() // stop the robot
 
 
 //------------------------------------------------------------------------------ENCODER DEFINITION
-myRobot::Encoder::Encoder(int a, int b)
-: channelA{a},channelB{b}
-{
-  
-	pinMode(channelA, INPUT_PULLUP); // setup input PWM for encoder pin
-	pinMode(channelB, INPUT_PULLUP); // setup input PWM for encoder pin  
-	
-	attachInterrupt(digitalPinToInterrupt(channelA),updateEncoder, RISING);
-	attachInterrupt(digitalPinToInterrupt(channelB), updateEncoder2, RISING);
 
-	
-//	previousMillis = millis(); // start timer
+void encoderPins1_init()
+{
+  pinMode(ENCODER_A[0], INPUT_PULLUP); // setup input PWM for encoder pin
+  pinMode(ENCODER_B[0], INPUT_PULLUP); // setup input PWM for encoder pin  
+  
+  attachInterrupt(INTERRUPT1,updateEncoderA<0>, CHANGE);
+  attachInterrupt(INTERRUPT2, updateEncoderB<0>, CHANGE);
+}
+
+void encoderPins2_init()
+{
+  pinMode(ENCODER_A[1], INPUT_PULLUP); // setup input PWM for encoder pin
+  pinMode(ENCODER_B[1], INPUT_PULLUP); // setup input PWM for encoder pin  
+  
+  attachInterrupt(INTERRUPT3,updateEncoderA<1>, CHANGE);
+  attachInterrupt(INTERRUPT4, updateEncoderB<1>, CHANGE);
+}
+
+
+template <int j>
+void updateEncoderA()
+{
+    // look for a low-to-high on channel A
+  if (digitalRead(ENCODER_A[j]) == HIGH) {
+
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER_B[j]) == LOW) {
+      counter[j] = counter[j] + 1;         // CW
+    }
+    else {
+      counter[j] = counter[j] - 1;         // CCW
+    }
+  }
+
+  else   // must be a high-to-low edge on channel A
+  {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER_B[j]) == HIGH) {
+      counter[j] = counter[j] + 1;          // CW
+    }
+    else {
+      counter[j] = counter[j] - 1;          // CCW
+    }
+  }
+}
+
+
+template <int j>
+void updateEncoderB()
+{
+   // look for a low-to-high on channel B
+  if (digitalRead(ENCODER_B[j]) == HIGH) {
+
+    // check channel A to see which way encoder is turning
+    if (digitalRead(ENCODER_A[j]) == HIGH) {
+      counter[j] = counter[j] + 1;         // CW
+    }
+    else {
+      counter[j] = counter[j] - 1;         // CCW
+    }
+  }
+
+  // Look for a high-to-low on channel B
+
+  else {
+    // check channel B to see which way encoder is turning
+    if (digitalRead(ENCODER_A[j]) == LOW) {
+      counter[j] = counter[j] + 1;          // CW
+    }
+    else {
+      counter[j] = counter[j] - 1;          // CCW
+    }
+  }
+}
+
+myRobot::Encoder::Encoder(int num)
+{
+  if (!num)
+  {
+    encoderPins1_init();
+    m_num = num;
+  }
+  else if (num == 1)
+  {
+    encoderPins2_init();
+    m_num = num;
+  }
 }
 
 
 void myRobot::Encoder::show()
 {
- // currentMillis = millis();
-  
-//  if (currentMillis - previousMillis > interval)
-//  {
       // Calculate RPM
-    rpm[0] = (encoderValue[0] * 60 *4 / (static_cast<double>(encoder_pulses))); // RPM calculation
-    rpm[1] = (encoderValue[1] * 60 *4 / (static_cast<double>(encoder_pulses))); // RPM calculation  
+    rpm = (counter[m_num] * 60*4 / (static_cast<double>(encoder_pulses))); // RPM calculation
 
- //   previousMillis = currentMillis;
-  
     Serial.print("Encoder(RPM): ");
-    Serial.print(rpm[0]);
-    Serial.print("\t");
-    Serial.println(rpm[1]);
+    Serial.println(rpm);
+
     
-    encoderValue[0] = 0;
-    encoderValue[1] = 0;
-  
-  
-}
-
-void myRobot::Encoder::updateEncoder()
-{
-  encoderValue[0]++; // Increment value for each pulse from encoder
-}
-
-void myRobot::Encoder::updateEncoder2()
-{
-  encoderValue[1]++;// Increment value for each pulse from encoder
+    counter[m_num] = 0;
 }
 
 
-void encoder_init()
+
+void interrupt_init()
 {
  Serial.begin(9600);
  
