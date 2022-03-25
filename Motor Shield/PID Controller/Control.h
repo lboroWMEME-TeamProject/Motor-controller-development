@@ -12,6 +12,8 @@
 const int ENCODER_A[] = {ENCODER1_A,ENCODER2_A};
 const int ENCODER_B[] = {ENCODER1_B,ENCODER2_B};
 
+const bool DEFAULTED_DIR[] = {false,true};
+
 #define INTERRUPT1 0 // pin 2
 #define INTERRUPT2 5 // pin 18
 #define INTERRUPT3 4 // pin 19
@@ -94,8 +96,7 @@ class Controller: public myRobot
   int encoderMeasure;
   long prevT =0;
   float eprev = 0;
-  float eintegral = 0;
-  
+  float eintegral = 0;  
 };
 
 
