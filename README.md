@@ -90,7 +90,7 @@ void loop()
 
 myRobot robot; // initialise all pins
 myRobot::Encoder encoder1(ENCODER1_A,ENCODER1_B); // insitialise the encoder1 pins
-myRobot::Encoder encoder1(ENCODER2_A,ENCODER2_B); // insitialise the encoder2 pins
+myRobot::Encoder encoder2(ENCODER2_A,ENCODER2_B); // insitialise the encoder2 pins
 
 void setup()
 {
