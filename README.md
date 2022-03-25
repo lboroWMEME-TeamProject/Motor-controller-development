@@ -1,6 +1,124 @@
-# Arduino-Encoder-work-
-Interfacing the DC gearbox motor's encoder to the Arduino Uno.
+# PID Controller Design and Implementation
 
-PID controller will be designed an implemented here. A C++ wrapper is used to split the large code into separate header and source files. More information and comments will be added shortly. 
+![PID_en svg](https://user-images.githubusercontent.com/92602684/160111152-343dc503-48d7-41ad-9b3f-9fd51776f294.png)
 
-For more info read the Deek Motor.md file 
+<a href ="https://github.com/areebTP">
+        <img src="https://img.shields.io/badge/Author-@areebTP-blue.svg?style=flat"/></a>
+
+
+# Description 
+
+This is a subsystem of the COVID cleaning robot which comprises of the object-oritented design in C++. The PID subsytems consits of header/source files required to move the robot and read from qudrature encoder channels. 
+
+# Installation & Usage 
+
+1- Performing basic opertations on the robot[1]
+
+```cpp
+ #include "myRobot.h" // include this file for pins initialisation
+// #include "Control.h" // OR include this header 
+
+myRobot robot; // create Robot object
+
+
+void setup()
+{}
+
+void loop()
+{
+ 	robot.move("forward",100); // move the robot forward at 100%
+  	delay(3000); // wait for 3 seconds
+  	robot.brake(); // brake
+  	delay(3000);
+  	robot.move("reverse",100); // reverse direction at 100%
+  
+}
+```
+
+2- Controlling the Relays 
+
+```cpp
+#include "Relay.h" 
+
+Relay relay(RELAY1,RELAY2,RELAY3);// replace these with global definitions or any other pins
+
+void setup()
+{}
+
+void loop()
+{
+//  relay.On(); // turn ON ALL pins
+//  delay(100); // on for 100ms
+//  relay.Off();// turn OFF ALL pins
+// delay(100);// off for 100ms
+  
+  relay.setPin(1,"off"); // turn off pin # 1 = PIN10
+//relay.setPin(0,"ON"); // turn on pin # 0 = PIN7
+//  relay.setPin(2,"off"); // turn off pin # 2 = PIN14
+}
+```
+
+3- Implementing the PID Controller[2]
+
+```cpp
+#include "Control.h"
+
+myRobot robot; // initialise all pins
+Controller pid1(0); // initialise PID for Motor1
+Controller pid2(1);// initialise PID for Motor2
+
+void setup()
+{
+  Serial.begin(9600);
+  pid1.setCommand(true,1.5); // arg1 = direction, arg2= distance in meters
+  pid1.setControl(5,0.5,0); // kp = 0.5, kd = 0.5, ki = 0
+
+  pid2.setCommand(true,1.5); 
+  pid2.setControl(3,0.5,0);  
+}
+
+void loop()
+{
+  pid1.Compute(); // start the PID controll MUST be placed inside  a while loop or fast interrupt
+  pid2.Compute();
+}
+```
+4- Measuring angular frequency(RPM) of the motors using the encoders[3]
+
+```cpp
+#include "myRobot.h" // include the robot file 
+
+myRobot robot; // initialise all pins
+myRobot::Encoder encoder1(ENCODER1_A,ENCODER1_B); // insitialise the encoder1 pins
+myRobot::Encoder encoder1(ENCODER2_A,ENCODER2_B); // insitialise the encoder2 pins
+
+void setup()
+{
+  Serial.begin(9600);
+  encoder_init();// enable the encoder interrupts 
+}
+
+void loop()
+{}
+
+ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
+{
+  encoder1.show(); // display RPM from both encoders 
+  encoder2.show();
+}
+
+```
+
+# References
+
+1.GitHub. 2022. Arduino-Motor-Shield-29250/two-motor.ino at master · Luen/Arduino-Motor-Shield-29250. [online] Available at: <https://github.com/Luen/Arduino-Motor-Shield-29250/blob/master/examples/two-motor.ino> [Accessed 25 March 2022].
+
+2.	
+Res C. How to control multiple DC motors with encoders [Internet]. Youtube; 2021 [cited 2022 Mar 25]. Available from: https://www.youtube.com/watch?v=3ozgxPi_tl0
+GitHub. 2022. GitHub - curiores/ArduinoTutorials. [online] Available at: <https://github.com/curiores/ArduinoTutorials> [Accessed 25 March 2022].
+
+3. DroneBot Workshop. Using rotary encoders with arduino [Internet]. Youtube; 2019 [cited 2022 Mar 25]. Available from: https://www.youtube.com/watch?v=V1txmR8GXzE
+
+# Encoder Datasheet
+
+https://www.ni.com/pdf/dspdf/en/ds-217
