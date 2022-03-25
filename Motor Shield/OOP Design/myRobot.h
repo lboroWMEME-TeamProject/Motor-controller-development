@@ -11,10 +11,27 @@
 #define RELAY2 10
 #define RELAY3 14
 
+const int ENCODER_A[] = {ENCODER1_A,ENCODER2_A};
+const int ENCODER_B[] = {ENCODER1_B,ENCODER2_B};
+
+
+
 #define INTERRUPT1 0 // pin 2
 #define INTERRUPT2 5 // pin 18
 #define INTERRUPT3 4 // pin 19
 #define INTERRUPT4 3 // pin 20
+
+
+void interrupt_init(); // initialise encoder interrupt
+
+void encoderPins1_init();
+void encoderPins2_init();
+
+template <int j>
+void updateEncoderA();
+
+template <int j>
+void updateEncoderB();
 
 class Relay
 {
@@ -39,6 +56,7 @@ class myRobot
 		void move_B(int);
     void moveM1(int,bool);
     void moveM2(int,bool);
+    void moveSelect(int,int,bool);
 		void brake();
     bool getDIR(){return m_dir;}
 		
@@ -46,21 +64,14 @@ class myRobot
 		{
 			public:
 		
-				Encoder(int,int); // constructor, encoder init 
+				Encoder(int); // constructor, encoder init 
 				void show();
 				//void enableB(); // will be added in the future 
 				
 			private:
-				int channelA; // encoder1 pin1
-				int channelB;// encoder1 pin2	 
-				const int interval = 1000; // One-second interval for measurements
-				const int encoder_pulses = 100; // found in the datasheet
-				long previousMillis{};// Counters for milliseconds during interval
-				long currentMillis{}; 
-				double rpm[2]={0,0};// Variable for RPM measuerment
-				static void updateEncoder();
-        static void updateEncoder2();
-        static volatile long encoderValue[2]; // Pulse count from encoder
+        double rpm{};
+				const int encoder_pulses = 400; // found in the datasheet
+        int m_num;
 		};
 	
 	private:
@@ -86,6 +97,9 @@ class EncoderCounter
   EncoderCounter();
 
   void showCount();
+
+  long getCountA(){return encoder0Pos;}
+  long getCountB(){return encoder1Pos;}
   
   static void doEncoderA();
   static void doEncoderB();
@@ -98,6 +112,8 @@ class EncoderCounter
  
 };
 
-void encoder_init();
+
+
+
 
 #endif
