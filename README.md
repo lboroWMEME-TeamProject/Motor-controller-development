@@ -115,6 +115,7 @@ ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
 
 2.	
 Res C. How to control multiple DC motors with encoders [Internet]. Youtube; 2021 [cited 2022 Mar 25]. Available from: https://www.youtube.com/watch?v=3ozgxPi_tl0
+
 GitHub. 2022. GitHub - curiores/ArduinoTutorials. [online] Available at: <https://github.com/curiores/ArduinoTutorials> [Accessed 25 March 2022].
 
 3. DroneBot Workshop. Using rotary encoders with arduino [Internet]. Youtube; 2019 [cited 2022 Mar 25]. Available from: https://www.youtube.com/watch?v=V1txmR8GXzE
