@@ -96,11 +96,11 @@ void myRobot::moveSelect(int num,int analogue,bool dir)
 {
   if (!num)
   {
-    moveM1(analogue,dir);
+    moveM2(analogue,dir);
   }
   else if (num==1)
   {
-    moveM2(analogue,dir);
+    moveM1(analogue,dir);
   }
 }
 
@@ -163,9 +163,9 @@ void Controller::setCommand(bool dir,float distance) // user input for direction
   
   if (m_dir)
   {
-  target =-1* distance * encoderMeasure;
+  target = -1*distance * encoderMeasure;
   }
-  else 
+  else if (!m_dir)
   {
    target = distance * encoderMeasure;
   }
@@ -276,15 +276,15 @@ void Controller::Compute()
      pwr = 255;
    }
 
-   if (u<0)
-   {
-     if (!m_dir)
-     {m_dir=true;}
-     else
-     {m_dir= false;}
-   }
+    bool newdir= DEFAULTED_DIR[m_num];
+    if (u<0)
+    {
+     newdir= (!newdir);
+    }
 
-   moveSelect(m_num,pwr,m_dir); // control 1 motor 
+    moveSelect(m_num,pwr,newdir); // control 1 motor 
+
+
 
    eprev = e;
 
