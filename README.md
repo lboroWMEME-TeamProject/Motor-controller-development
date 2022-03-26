@@ -1,6 +1,8 @@
 # PID Controller Design and Implementation
 
-![PID_en svg](https://user-images.githubusercontent.com/92602684/160111152-343dc503-48d7-41ad-9b3f-9fd51776f294.png)
+
+![image](https://user-images.githubusercontent.com/92602684/160253302-a9bdf04f-4aa9-4272-a4fc-e1f518835d3a.png)
+
 
 <a href ="https://github.com/areebTP">
         <img src="https://img.shields.io/badge/Author-@areebTP-blue.svg?style=flat"/></a>
