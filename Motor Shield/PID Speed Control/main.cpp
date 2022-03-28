@@ -10,7 +10,7 @@ void setup()
 {
   Serial.begin(9600);
   pid1.setCommand(false,0.25); // arg1 = direction, arg2= speed in meteres/second 
-  pid1.setControl(0.5,0,1.25); 
+  pid1.setControl(0.5,0,1.25);  // or try  pid1.setControl(0.25,0.025,1.00); 
 
   pid2.setCommand(false,0.25); 
   pid2.setControl(0.5,0,1.25);  
