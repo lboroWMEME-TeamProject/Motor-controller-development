@@ -10,7 +10,7 @@
 
 # Description 
 
-This is a subsystem of the COVID cleaning robot which comprises of the object-oritented design in C++. The PID subsytems consits of header/source files required to move the robot and read from qudrature encoder channels. 
+This is a subsystem of the COVID cleaning robot which comprises of the object-oritented design in C++. The motor controller subsytem consits of header/source files required to move the robot and read from qudrature encoder channels. The PID controller is an integral part of our robot as it forms the basis of the final navigation system we plan to implement.  
 
 # Installation & Usage 
 
