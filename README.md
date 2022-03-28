@@ -3,9 +3,18 @@
 
 ![image](https://user-images.githubusercontent.com/92602684/160253302-a9bdf04f-4aa9-4272-a4fc-e1f518835d3a.png)
 
-
-<a href ="https://github.com/areebTP">
+<p align='center'>
+    <a href ="https://github.com/EoinBrennan2000">
+        <img src="https://img.shields.io/badge/Author-@EoinBrennan2000-blueviolet.svg?style=flat" /></a>
+    <a href ="https://github.com/areebTP">
         <img src="https://img.shields.io/badge/Author-@areebTP-blue.svg?style=flat"/></a>
+    <a href ="https://github.com/AleksNowak">
+        <img src="https://img.shields.io/badge/Author-@AleksNowak-green.svg?style=flat"/></a>
+    <a href ="https://github.com/LC-11115">
+        <img src="https://img.shields.io/badge/Author-@LC--11115-yellow.svg?style=flat"/></a>
+    <a href ="https://github.com/ECorpAdmin">
+        <img src="https://img.shields.io/badge/Author-@ECorpAdmin-red.svg?style=flat"/></a>
+
 
 
 # Description 
