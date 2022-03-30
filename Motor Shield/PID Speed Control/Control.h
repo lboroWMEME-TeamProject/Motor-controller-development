@@ -12,12 +12,15 @@
 const int ENCODER_A[] = {ENCODER1_A,ENCODER2_A};
 const int ENCODER_B[] = {ENCODER1_B,ENCODER2_B};
 
-const bool DEFAULTED_DIR[] = {false,true};
+const bool DEFAULTED_DIR[] = {true,false};
+
+const float pi {3.1415926535};
 
 #define INTERRUPT1 0 // pin 2
 #define INTERRUPT2 5 // pin 18
 #define INTERRUPT3 4 // pin 19
 #define INTERRUPT4 3 // pin 20
+
 
 class myRobot
 {
@@ -76,6 +79,7 @@ class Controller: public myRobot
   Controller(int);
   void setCommand(bool,float);
   void setControl(float,float,float);
+  void setAll(float,bool,float,float,float);
   void Compute();
   
   private:
@@ -93,7 +97,8 @@ class Controller: public myRobot
   const int encoderCounts{400}; // encoder clicks in 1 rev
   const float radius{0.05}; // radius of 5 cm  
   const float scale{63.66198}; // scaling factor to convert m/s to clicks/s
-  int posPrev = 0;
+  long posPrev = 0;
+  long pos =0;
   float v1Filt = 0;
   float v1Prev = 0;
 };
