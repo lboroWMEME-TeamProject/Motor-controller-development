@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include <util/atomic.h>
-#include "Control.h"
+#include "Control.hpp"
 
 myRobot::myRobot()
 {
@@ -146,12 +146,14 @@ Controller::Controller(int number) // inistialise encoder pins
 {
     if (!number)
     {
+      lpf = LowPass<2>(1.0,10.0,true);  
       encoder1_init();
       encoderMeasure = 1238;
       m_num = number;
     }
     else if (number == 1)
     {
+      lpf = LowPass<2>(3,10.0,true);
       encoder2_init();
       encoderMeasure = 1228;
       m_num = number;
@@ -268,8 +270,8 @@ void Controller::Compute()
   prevT = currT;
 
      // Low-pass filter (25 Hz cutoff)
-    v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
-    v1Prev = velocity;
+ //   v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
+ //   v1Prev = velocity;
 
    int e = v1Filt - target;
 
@@ -328,17 +330,20 @@ void Controller::setAll(float tar,bool dir,float kp,float kd,float ki)
   prevT = currT;
 
      // Low-pass filter (25 Hz cutoff)
-   v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
-   v1Prev = velocity;
+//   v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
+//   v1Prev = velocity;
 
-   int e = v1Filt - tar;
+   v1Filt = lpf.filt(velocity);
+
+   int e = tar - v1Filt;
 
    float dedt = (e-eprev)/(deltaT);
    eintegral = eintegral + e*deltaT;
 
    float u = kp*e+ kd*dedt + ki*eintegral;
 
-   float pwr = fabs(u);// absolute value 
+   float pwr = fabs(u);// absolute value
+ //  float pwr = fabs(e);// absolute value
    if (pwr>255)
    {
      pwr = 255;
