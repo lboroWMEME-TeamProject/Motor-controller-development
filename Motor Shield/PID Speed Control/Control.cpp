@@ -1,5 +1,6 @@
 #include "Arduino.h"
-#include "Control.h"
+#include <util/atomic.h>
+#include "Control.hpp"
 
 myRobot::myRobot()
 {
@@ -14,48 +15,48 @@ myRobot::myRobot()
 
 void myRobot::move(const String& Direction,double speed)
 {
-	int analogW = speed*scaling_factor; // analgoue value to write for PWM 
+  int analogW = speed*scaling_factor; // analgoue value to write for PWM 
  
   
-	if (Direction.equalsIgnoreCase("forward"))
-	{
+  if (Direction.equalsIgnoreCase("forward"))
+  {
     m_dir = true;
-		move_F(analogW); // move forward
-	}
-	
-	else if (Direction.equalsIgnoreCase("reverse"))
-	{
+    move_F(analogW); // move forward
+  }
+  
+  else if (Direction.equalsIgnoreCase("reverse"))
+  {
     m_dir = false;
-		move_B(analogW); // move backward 
-	}
-		
+    move_B(analogW); // move backward 
+  }
+    
 }
 
-void myRobot::move_F(int analogW)	// move forward 
+void myRobot::move_F(int analogW) // move forward 
 {
-	//Motor A 
-	digitalWrite(dir1, HIGH); //Establishes direction of Channel A
-	digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
-	analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
+  //Motor A 
+  digitalWrite(dir1, HIGH); //Establishes direction of Channel A
+  digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
+  analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
 
-	//Motor B 
-	digitalWrite(dir2, LOW);  //Establishes direction of Channel B
-	digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
-	analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
-	
+  //Motor B 
+  digitalWrite(dir2, LOW);  //Establishes direction of Channel B
+  digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
+  analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
+  
 }
 
 void myRobot::move_B(int analogW) // move backward
-{	
-	//Motor A 
-	digitalWrite(dir1, LOW); //Establishes direction of Channel A
-	digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
-	analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
+{ 
+  //Motor A 
+  digitalWrite(dir1, LOW); //Establishes direction of Channel A
+  digitalWrite(brake1, LOW);   //Disengage the Brake for Channel A
+  analogWrite(pwm1, analogW);   //Spins the motor on Channel A 
 
-	//Motor B 
-	digitalWrite(dir2, HIGH);  //Establishes  direction of Channel B
-	digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
-	analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
+  //Motor B 
+  digitalWrite(dir2, HIGH);  //Establishes  direction of Channel B
+  digitalWrite(brake2, LOW);   //Disengage the Brake for Channel B
+  analogWrite(pwm2, analogW);    //Spins the motor on Channel B 
 }
 
 void myRobot::moveM1(int analogW,bool dir)
@@ -107,8 +108,8 @@ void myRobot::moveSelect(int num,int analogue,bool dir)
 
 void myRobot::brake() // stop the robot 
 {
-	digitalWrite(brake1, HIGH);  //Engage the Brake for Channel A
-	digitalWrite(brake2, HIGH);  //Engage the Brake for Channel B
+  digitalWrite(brake1, HIGH);  //Engage the Brake for Channel A
+  digitalWrite(brake2, HIGH);  //Engage the Brake for Channel B
 }
 
 //--------------------------------------------------------ANGULAR FREQUENCY ENCODER FUNCTION
@@ -300,6 +301,68 @@ void Controller::Compute()
    Serial.print("counts/s: ");
    Serial.print(target);
    Serial.print("\t");
-   Serial.print(velocity);
+   Serial.print(v1Filt);
    Serial.println();   
+}
+
+void Controller::setAll(float tar,bool dir,float kp,float kd,float ki)
+{
+  
+  if (dir)
+  {
+  tar = -1* tar * (encoderCounts/(2*pi*radius)); // convert m/s to encoder_counts/s
+  }
+  else if(!dir)
+  {
+  tar = tar * (encoderCounts/(2*pi*radius)); // convert m/s to encoder_counts/s
+  }
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    pos = count[m_num];
+  }
+  
+  long currT = micros();
+
+  float deltaT = (float)(currT-prevT)/1.0e6;
+  float velocity = (pos - posPrev)/deltaT; // compute velocity 
+
+  posPrev= count[m_num];
+  prevT = currT;
+
+     // Low-pass filter (25 Hz cutoff)
+   v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
+   v1Prev = velocity;
+
+
+   int e = tar - v1Filt;
+
+   float dedt = (e-eprev)/(deltaT);
+   eintegral = eintegral + e*deltaT;
+
+   float u = kp*e+ kd*dedt + ki*eintegral;
+
+   float pwr = fabs(u);// absolute value
+ //  float pwr = fabs(e);// absolute value
+   if (pwr>255)
+   {
+     pwr = 255;
+   }
+
+    bool newdir= DEFAULTED_DIR[m_num];
+    
+    if (u<0)
+    {
+     newdir= (!newdir);
+    }
+
+   moveSelect(m_num,pwr,newdir); // control 1 motor 
+
+   eprev = e;
+
+   Serial.print("counts/s:\t");
+   Serial.print(tar);
+   Serial.print("\t");
+   Serial.println(v1Filt);
+
 }
