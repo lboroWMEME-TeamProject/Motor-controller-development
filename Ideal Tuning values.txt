@@ -11,18 +11,18 @@ kd= 0.095;
 ki = 0.65;
 
 
-ALTERNATE PID CONTROLLER WITH AGGRESIVE FILTERING:
+ALTERNATE PID CONTROLLER WITH AGGRESIVE FILTERING: 9600 baud rate 
 
 1- PID # 0, LPF = 1 Hz 2nd Order
 
-kp = 0.45;
-kd= 0.0450;
-ki = 0.50;
+kp = 0.275;
+kd= 0.0850;
+ki = 0.55;
 
-2- PID # 1, LPF = 3 Hz 2nd Order
+2- PID # 1, LPF = 1 Hz 2nd Order
 
 kp = 0.30;
-kd= 0.0020;
+kd= 0.0750;
 ki = 0.75;
 
 
