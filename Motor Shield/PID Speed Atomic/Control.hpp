@@ -178,7 +178,7 @@ class Controller: public myRobot
   const int encoderCounts{400}; // encoder clicks in 1 rev
   const float radius{0.05}; // radius of 5 cm  
   const float scale{63.66198}; // scaling factor to convert m/s to clicks/s, 200/pi
-  int posPrev = 0;
+  long posPrev = 0;
   long pos =0;
   float v1Filt = 0;
   float v1Prev = 0; 
