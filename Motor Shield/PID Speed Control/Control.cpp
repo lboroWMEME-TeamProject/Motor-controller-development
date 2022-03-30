@@ -256,8 +256,6 @@ void encoder2_init()
   attachInterrupt(INTERRUPT4, encoderB<1>, CHANGE);
 }
 
-float v1Filt = 0;
-float v1Prev = 0;
 
 void Controller::Compute()
 {
