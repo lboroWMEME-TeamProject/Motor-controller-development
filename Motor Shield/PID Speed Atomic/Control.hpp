@@ -9,7 +9,7 @@
 #define RELAY2 10
 #define RELAY3 14
 
-const double pi {3.1415926535};
+const float pi {3.1415926535};
 
 const int ENCODER_A[] = {ENCODER1_A,ENCODER2_A};
 const int ENCODER_B[] = {ENCODER1_B,ENCODER2_B};
@@ -36,7 +36,14 @@ class LowPass
 
   public: 
     LowPass()= default; 
-    LowPass(float f0, float fs, bool adaptive){
+	  LowPass(float f0, float fs, bool adaptive);
+    void setCoef();
+    float filt(float xn);
+};
+
+template<int order>
+LowPass<order>::LowPass(float f0, float fs, bool adaptive)
+{
       // f0: cutoff frequency (Hz)
       // fs: sample frequency (Hz)
       // adaptive: boolean flag, if set to 1, the code will automatically set
@@ -51,9 +58,11 @@ class LowPass
         y[k] = 0;        
       }
       setCoef();
-    }
+}
 
-    void setCoef(){
+template<int order>
+void LowPass<order>::setCoef()
+{
       if(adapt){
         float t = micros()/1.0e6;
         dt = t - tn1;
@@ -76,9 +85,11 @@ class LowPass
         a[0] = -(2.0-2.0*c2)/denom;
         a[1] = -(1.0-c1+c2)/(1.0+c1+c2);      
       }
-    }
+}
 
-    float filt(float xn){
+template<int order>
+float LowPass<order>::filt(float xn)
+{
       // Provide me with the current raw value: x
       // I will give you the current filtered value: y
       if(adapt){
@@ -100,8 +111,8 @@ class LowPass
   
       // Return the filtered value    
       return y[0];
-    }
-};
+}
+
 
 class myRobot
 {
