@@ -23,7 +23,7 @@ This is a subsystem of the COVID cleaning robot which comprises of the object-or
 
 # Installation & Usage 
 
-1- Performing basic opertations on the robot[1]
+1- Performing basic opertations on the robot[1]. Find files: Motor Shield -> OOP Design -> "myRobot.h" + "myRobot.cpp"
 
 ```cpp
  #include "myRobot.h" // include this file for pins initialisation
@@ -46,7 +46,7 @@ void loop()
 }
 ```
 
-2- Controlling the Relays 
+2- Controlling the Relays. Find files: Motor Shield -> OOP Design -> "Relay.h" + "Relay.cpp"
 
 ```cpp
 #include "Relay.h" 
@@ -69,56 +69,32 @@ void loop()
 }
 ```
 
-3- Implementing the PID Controller[2]
+3- Implementing the PID Controller[2].  Find files: Motor Shield -> PID Speed Atomic -> "Control.hpp" + "Control.cpp". The tuned values for the PID are found in a .txt file "Ideal Tuning Values.txt" this is designed via George Ellis tuning method[3]. 
 
 ```cpp
-#include "Control.h"
+#include "Control.hpp"
 
 myRobot robot; // initialise all pins
-Controller pid1(0); // initialise PID for Motor1
-Controller pid2(1);// initialise PID for Motor2
+Controller pid0(0); // create PID object for Motor 0
+Controller pid1(1);// create PID object for Motor 1
+
 
 void setup()
 {
   Serial.begin(9600);
-  pid1.setCommand(true,1.5); // arg1 = direction, arg2= distance in meters
-  pid1.setControl(5,0.5,0); // kp = 0.5, kd = 0.5, ki = 0
+  pid0.setCommand(false,0.75); // set direction and speed for PID0
+  pid0.setControl(0.275,0.0850,0.55);// set Kp,Kd and Ki
 
-  pid2.setCommand(true,1.5); 
-  pid2.setControl(3,0.5,0);  
+  pid1.setCommand(false,0.75); // set direction and speed for PID1
+  pid1.setControl(0.30,0.0750,0.75);// set Kp,Kd and Ki
 }
 
 void loop()
 {
-  pid1.Compute(); // start the PID controll MUST be placed inside  a while loop or fast interrupt
-  pid2.Compute();
+   pid0.Compute();// start computing and driving PID signal 
+   pid1.Compute();
 }
-```
-4- Measuring angular frequency(RPM) of the motors using the encoders[3]
-
-```cpp
-#include "myRobot.h" // include the robot file 
-
-myRobot robot; // initialise all pins
-myRobot::Encoder encoder1(0); // insitialise the encoder1 pins
-myRobot::Encoder encoder2(1); // insitialise the encoder2 pins
-
-void setup()
-{
-  interrupt_init();// enable the encoder interrupts 
-}
-
-void loop()
-{
- //  robot.move("forward",100);
-}
-
-ISR(TIMER1_COMPA_vect)//timer1 interrupt 4Hz
-{
-  encoder1.show(); // display RPM from both encoders 
-  encoder2.show();
-}
-
+        
 ```
 
 # References
@@ -135,7 +111,7 @@ GitHub. 2022. GitHub - curiores/ArduinoTutorials. [online] Available at: <https:
 
 3.
 
-DroneBot Workshop. Using rotary encoders with arduino [Internet]. Youtube; 2019 [cited 2022 Mar 25]. Available from: https://www.youtube.com/watch?v=V1txmR8GXzE
+Ellis G. StackPath [Internet]. www.machinedesign.com. 2000. Available from: https://www.machinedesign.com/motors-drives/article/21834627/twenty-minute-tuneup
 
 # Encoder Datasheet
 
