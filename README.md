@@ -82,10 +82,10 @@ Controller pid1(1);// create PID object for Motor 1
 void setup()
 {
   Serial.begin(9600);
-  pid0.setCommand(false,0.75); // set direction and speed for PID0
+  pid0.setCommand(false,0.75); // set direction and speed(m/s) for PID0
   pid0.setControl(0.275,0.0850,0.55);// set Kp,Kd and Ki
 
-  pid1.setCommand(false,0.75); // set direction and speed for PID1
+  pid1.setCommand(false,0.75); // set direction and speed(m/s) for PID1
   pid1.setControl(0.30,0.0750,0.75);// set Kp,Kd and Ki
 }
 
