@@ -153,7 +153,7 @@ Controller::Controller(int number) // inistialise encoder pins
     }
     else if (number == 1)
     {
-      lpf = LowPass<2>(3,10.0,true);
+      lpf = LowPass<2>(1,10.0,true);
       encoder2_init();
       encoderMeasure = 1228;
       m_num = number;
@@ -260,20 +260,21 @@ void encoder2_init()
 
 void Controller::Compute()
 {
-  
+   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    pos = count[m_num];
+  }
+
+   
   long currT = micros();
 
   float deltaT = (float)(currT-prevT)/1.0e6;
-  float velocity = (count[m_num] - posPrev)/deltaT; // compute velocity 
+  float velocity = (pos - posPrev)/deltaT; // compute velocity 
 
-  posPrev= count[m_num];
-  prevT = currT;
+   posPrev= pos;
+   prevT = currT;
 
-     // Low-pass filter (25 Hz cutoff)
- //   v1Filt = 0.854*v1Filt + 0.0728*velocity + 0.0728*v1Prev;
- //   v1Prev = velocity;
-
-   int e = v1Filt - target;
+   int e = target - (lpf.filt(velocity));
 
    float dedt = (e-eprev)/(deltaT);
    eintegral = eintegral + e*deltaT;
@@ -326,7 +327,7 @@ void Controller::setAll(float tar,bool dir,float kp,float kd,float ki)
   float deltaT = (float)(currT-prevT)/1.0e6;
   float velocity = (pos - posPrev)/deltaT; // compute velocity 
 
-  posPrev= count[m_num];
+  posPrev= pos;
   prevT = currT;
 
      // Low-pass filter (25 Hz cutoff)
@@ -343,7 +344,7 @@ void Controller::setAll(float tar,bool dir,float kp,float kd,float ki)
    float u = kp*e+ kd*dedt + ki*eintegral;
 
    float pwr = fabs(u);// absolute value
- //  float pwr = fabs(e);// absolute value
+
    if (pwr>255)
    {
      pwr = 255;
