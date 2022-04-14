@@ -42,7 +42,7 @@ void loop()
   	robot.brake(); // brake for 3 seconds
   	delay(3000);
   	robot.move("reverse",100); // reverse direction at 100%
-    delay(3000); // for 3 seconds 
+        delay(3000); // for 3 seconds 
 }
 ```
 
