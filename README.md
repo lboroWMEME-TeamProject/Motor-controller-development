@@ -39,10 +39,10 @@ void loop()
 {
  	robot.move("forward",100); // move the robot forward at 100%
   	delay(3000); // wait for 3 seconds
-  	robot.brake(); // brake
+  	robot.brake(); // brake for 3 seconds
   	delay(3000);
   	robot.move("reverse",100); // reverse direction at 100%
-  
+    delay(3000); // for 3 seconds 
 }
 ```
 
