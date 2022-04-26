@@ -273,8 +273,10 @@ void Controller::Compute()
 
    posPrev= pos;
    prevT = currT;
-
-   int e = target - (lpf.filt(velocity));
+	
+   v1Filt = lpf.filt(velocity);// store filtered velocity 
+   
+   int e = target - v1Filt;
 
    float dedt = (e-eprev)/(deltaT);
    eintegral = eintegral + e*deltaT;
