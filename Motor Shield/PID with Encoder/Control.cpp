@@ -391,7 +391,7 @@ myRobot::Encoder::Encoder(int num)
 void myRobot::Encoder::show()
 {
       // Calculate RPM
-    rpm = (count[m_num] * 60*4 / (static_cast<double>(encoder_pulses))); // RPM calculation
+    rpm = (count[m_num] * 60*4 / (static_cast<float>(encoder_pulses))); // RPM calculation
 
     Serial.print("Encoder(RPM): ");
     Serial.println(rpm);
