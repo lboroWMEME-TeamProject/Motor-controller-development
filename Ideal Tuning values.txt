@@ -25,8 +25,3 @@ kp = 0.30;
 kd= 0.0750;
 ki = 0.75;
 
-
-George Ellis tuning method:
-
-
-2. Ellis G. StackPath [Internet]. www.machinedesign.com. 2000. Available from: https://www.machinedesign.com/motors-drives/article/21834627/twenty-minute-tuneup
