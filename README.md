@@ -69,7 +69,8 @@ void loop()
 }
 ```
 
-3- Implementing the PID Controller[2].  Find files: Motor Shield -> PID Speed Atomic -> "Control.hpp" + "Control.cpp". The tuned values for the PID are found in a .txt file "Ideal Tuning Values.txt" this is designed via George Ellis tuning method[3]. 
+3- Implementing the PID Controller[2].  Find files: Motor Shield -> PID Speed Atomic -> "Control.hpp" + "Control.cpp". The tuned values for the PID are found in a .txt file "Ideal Tuning Values.txt" this is designed via George Ellis tuning method[3]. An alternate Arduino sketch with a more optimized PID function can be fouund 
+in Motor Shield -> PID with Encoder. 
 
 ```cpp
 #include "Control.hpp"
